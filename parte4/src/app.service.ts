@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { read_csv } from './app.method';
+import { readCsvFilter } from './app.method';
 import { ibgeDatabase } from './database/ibgeDatabase';
 import ibgeEntitie from './entities/ibgeEntitie';
 
@@ -9,9 +9,9 @@ export class AppService {
     return 'Hello World!';
   }
 
-  async getCsvIbge(): Promise<ibgeEntitie[]> {
-    const ibgesFromCsv = await read_csv();
-    ibgeDatabase.push(ibgesFromCsv);
+  async getCsvIbgeFilter(): Promise<ibgeEntitie[]> {
+    const ibgesFromCsv = await readCsvFilter();
+    ibgeDatabase.push(...ibgesFromCsv);
     return ibgeDatabase;
   }
 

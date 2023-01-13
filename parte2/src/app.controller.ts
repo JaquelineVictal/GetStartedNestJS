@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Req } from '@nestjs/common';
-import { create } from 'domain';
 import { AppService } from './app.service';
 import ibgeEntitie from './entities/ibgeEntitie';
 import Iibge from './interfaces/Iibge';

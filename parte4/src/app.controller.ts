@@ -18,6 +18,6 @@ export class AppController {
 
   @Get('read-csv/IBGE')
   async getCsvIbge(): Promise<ibgeEntitie[]> {
-    return await this.appService.getCsvIbge();
+    return await this.appService.getCsvIbgeFilter();
   }
 }

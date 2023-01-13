@@ -11,7 +11,7 @@ export class AppService {
 
   async getCsvIbge(): Promise<ibgeEntitie[]> {
     const ibgesFromCsv = await read_csv();
-    ibgeDatabase.push(ibgesFromCsv);
+    ibgeDatabase.push(...ibgesFromCsv);
     return ibgeDatabase;
   }
 
