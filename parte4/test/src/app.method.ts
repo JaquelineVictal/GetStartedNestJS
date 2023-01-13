@@ -17,7 +17,6 @@ export async function read_csv(): Promise<ibgeEntitie[]> {
         });
     });
   const csvTojson = (await promise()) as any[];
-  console.log(csvTojson);
   const newIbgeEntitie = csvTojson.map((csvTojsonElement, index) =>
     makeIbgeEntitie(csvTojsonElement, index),
   );

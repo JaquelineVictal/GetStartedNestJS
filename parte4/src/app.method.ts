@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as csv from 'csv-parser';
 import ibgeEntitie from './entities/ibgeEntitie';
 
-export async function read_csv(): Promise<ibgeEntitie[]> {
+export async function readCsvFilter(): Promise<ibgeEntitie[]> {
   const promise = () =>
     new Promise((resolve, reject) => {
       const csvTojson = [];
@@ -17,10 +17,14 @@ export async function read_csv(): Promise<ibgeEntitie[]> {
         });
     });
   const csvTojson = (await promise()) as any[];
-  const newIbgeEntitie = csvTojson.map((csvTojsonElement, index) =>
+  const newIbgesEntitie = csvTojson.map((csvTojsonElement, index) =>
     makeIbgeEntitie(csvTojsonElement, index),
   );
-  return newIbgeEntitie as ibgeEntitie[];
+  const find = 'EI';
+  const getCsvIbgeFilter = newIbgesEntitie.filter((newIbgesEntitieElement) =>
+    newIbgesEntitieElement.name.match(find),
+  );
+  return getCsvIbgeFilter as ibgeEntitie[];
 }
 
 function makeIbgeEntitie(csvTojsonElement: any, index: number): ibgeEntitie {
