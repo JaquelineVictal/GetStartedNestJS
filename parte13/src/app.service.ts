@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { readCsvFilter } from './app.method';
 import { metricsDatabase } from './database/metricsDatabase';
-import ibgeEntitie from './entities/metricEntitie';
+import ibgeEntitie from './module/reports/entities/metricEntitie';
 
 @Injectable()
 export class AppService {

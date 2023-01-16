@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as csv from 'csv-parser';
-import ibgeEntitie from './entities/metricEntitie';
+import ibgeEntitie from './module/reports/entities/metricEntitie';
 
 export async function readCsvFilter(arrLength: number): Promise<ibgeEntitie[]> {
   const promise = () =>
