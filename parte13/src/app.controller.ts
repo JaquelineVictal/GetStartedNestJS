@@ -1,6 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import ibgeEntitie from './module/reports/entities/metricEntitie';
 
 @Controller()
 export class AppController {
@@ -9,15 +8,5 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
-  }
-
-  @Get('IBGE')
-  getIbge(): ibgeEntitie[] {
-    return this.appService.getIbge();
-  }
-
-  @Get('read-csv/IBGE')
-  async getCsvIbge(): Promise<ibgeEntitie[]> {
-    return await this.appService.getCsvIbgeFilter();
   }
 }
