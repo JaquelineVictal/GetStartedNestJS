@@ -19,6 +19,7 @@ export default class AppController {
 
   @Post('IBGE')
   postIbge(@Req() request: Request): Iibge {
+    //typeGuard
     const ibge = request.body as unknown as Iibge;
     return this.appService.postIbge(ibge);
   }

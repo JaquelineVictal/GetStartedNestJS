@@ -1,12 +1,12 @@
 import * as fs from 'fs';
 import * as csv from 'csv-parser';
-import ibgeEntitie from './entities/ibgeEntitie';
+import ibgeEntitie from './entities/metricEntitie';
 
 export async function readCsvFilter(arrLength: number): Promise<ibgeEntitie[]> {
   const promise = () =>
     new Promise((resolve, reject) => {
       const csvTojson = [];
-      fs.createReadStream(`${process.cwd()}/ibge-fem-10000.csv`)
+      fs.createReadStream(`${process.cwd()}/METRICS_REPORT-1673286660394.csv`)
         .pipe(csv())
         .on('data', (csvline) => csvTojson.push(csvline))
         .on('end', () => {

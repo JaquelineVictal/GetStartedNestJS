@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { readCsvFilter } from './app.method';
-import { ibgeDatabase } from './database/ibgeDatabase';
-import ibgeEntitie from './entities/ibgeEntitie';
+import { metricsDatabase } from './database/metricsDatabase';
+import ibgeEntitie from './entities/metricEntitie';
 
 @Injectable()
 export class AppService {
@@ -10,12 +10,14 @@ export class AppService {
   }
 
   async getCsvIbgeFilter(): Promise<ibgeEntitie[]> {
-    const ibgesFromCsv = await readCsvFilter(ibgeDatabase.length);
-    ibgeDatabase.push(...ibgesFromCsv);
-    return ibgeDatabase;
+    const parsedCsv = await read_csv();
+    const reportDays = getAllDays(parsedCsv);
+    const groupByResults = groupByHourAvg(reportDays, parsedCsv)
+    metricsDatabase.push(...ibgesFromCsv);
+    return metricsDatabase;
   }
 
   getIbge(): ibgeEntitie[] {
-    return ibgeDatabase;
+    return metricsDatabase;
   }
 }

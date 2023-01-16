@@ -16,11 +16,12 @@ export async function read_csv(arrLength: number): Promise<ibgeEntitie[]> {
           reject(err);
         });
     });
-  const csvTojson = (await promise()) as any[];
-  const newIbgeEntitie = csvTojson.map((csvTojsonElement, index) =>
-    makeIbgeEntitie(csvTojsonElement, index, arrLength),
+  const csvTojson = (await promise()) as any[]; //ajustar
+  const newIbgeEntitie: ibgeEntitie[] = csvTojson.map(
+    (csvTojsonElement, index) =>
+      makeIbgeEntitie(csvTojsonElement, index, arrLength),
   );
-  return newIbgeEntitie as ibgeEntitie[];
+  return newIbgeEntitie;
 }
 
 function makeIbgeEntitie(

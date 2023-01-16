@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import ibgeEntitie from './entities/ibgeEntitie';
+import ibgeEntitie from './entities/metricEntitie';
 
 @Controller()
 export class AppController {
