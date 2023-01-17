@@ -104,7 +104,7 @@ export class AppService {
   ): IPoint[] {
     const dayEnergyPoints = energyPointValues.filter(
       (energyPointValuesElement) =>
-        this.filterIsSameDay(energyPointValuesElement.date, day) == true,
+        this.filterIsSameDay(energyPointValuesElement.date, day),
     );
     return dayEnergyPoints;
   }
@@ -115,12 +115,12 @@ export class AppService {
   ): IPoint[] {
     const dayWeatherPoint = weatherPointValues.filter(
       (weatherPointValuesElement) =>
-        this.filterIsSameDay(weatherPointValuesElement.date, day) == true,
+        this.filterIsSameDay(weatherPointValuesElement.date, day),
     );
     return dayWeatherPoint;
   }
 
-  private getMaxWeatherValue(dayWeatherPoint): number {
+  private getMaxWeatherValue(dayWeatherPoint: IPoint[]): number {
     return Math.max(
       ...dayWeatherPoint.map(
         (weatherPointValuesElement) => weatherPointValuesElement.value,
@@ -140,7 +140,7 @@ export class AppService {
   ): boolean {
     //IF date < initialMonthClosed the Site is closed --> true
     //IF isWinter is true the site is closed true
-    if (date.getDate() < initialMonthClosed || isWinter == true) return true;
+    if (date.getDate() < initialMonthClosed || isWinter) return true;
     return false;
   }
 }
