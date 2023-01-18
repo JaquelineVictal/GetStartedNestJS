@@ -23,6 +23,7 @@ import {
   isSunday,
   isValid,
   isWeekend,
+  startOfHour,
   startOfDay,
   startOfMonth,
   startOfWeek,
@@ -83,6 +84,10 @@ export class Datez {
     return new Datez(this.date).sub(duration);
   }
 
+  toLocaleString(timezone: string): string {
+    return this.date.toLocaleString(timezone);
+  }
+
   toUtc(timeZone: string): Datez {
     return new Datez(zonedTimeToUtc(this.date, timeZone));
   }
@@ -97,6 +102,9 @@ export class Datez {
 
   isSameDay(dateRight: Datez): boolean {
     return isSameDay(this.date, dateRight.toDate());
+  }
+  startOfHour(): Datez {
+    return new Datez(startOfHour(this.date));
   }
   startOfDay(): Datez {
     return new Datez(startOfDay(this.date));

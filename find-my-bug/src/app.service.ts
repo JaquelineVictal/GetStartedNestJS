@@ -5,19 +5,15 @@ import { ConfigurationService } from './configuration/configuration.service';
 import { ElectricityPoints } from './mocks/electricityPoints.mock';
 import { WeatherPoints } from './mocks/weatherPoints.mock';
 import * as Math from 'mathjs';
+import { POINTS_FREQUENCY } from './enum/frequency.enum';
 
 @Injectable()
 export class AppService {
-  //constructor() {}
-
   getReport(body: IReportInput): IResultProcess[] {
     const { dateFrom, dateTo, frequency, energy } = body;
     const dayInRange = this.createDateRange(dateFrom, dateTo);
-    console.log(dayInRange);
     const envEnergyType = this.getEnvEnergyType();
-    console.log(envEnergyType);
     const parameters = this.getParameters();
-    console.log(parameters);
 
     if (envEnergyType != energy)
       throw new BadRequestException('Doesnt has a report for this energy type');
@@ -26,7 +22,12 @@ export class AppService {
       const IResultProcess = this.process(date, parameters);
       return IResultProcess;
     });
-    return result;
+    const resultGroupByFreq: IResultProcess[] = this.getResultGroupByFreq(
+      result,
+      frequency,
+    );
+
+    return resultGroupByFreq;
   }
 
   private process(
@@ -45,15 +46,9 @@ export class AppService {
       parameters.parameterC,
       parameters.parameterD,
     );
-    if (isClosedDay) {
-      const returnIsClosedDay: IResultProcess[] = dayEnergyPoints.map(
-        (point) => {
-          return this._calculateIsClosedDay(point);
-        },
-      );
-      return returnIsClosedDay;
-    }
+
     const result: IResultProcess[] = dayEnergyPoints.map((point) => {
+      if (isClosedDay) return { date: point.date, value: null };
       return this._calculate(point, maxWeatherValue, parameters);
     });
     return result;
@@ -69,12 +64,6 @@ export class AppService {
       value:
         parameters.parameterA * point.value * maxWeatherValue -
         parameters.parameterB,
-    };
-  }
-  private _calculateIsClosedDay(point: IPoint): IResultProcess {
-    return {
-      date: point.date,
-      value: null,
     };
   }
 
@@ -143,6 +132,61 @@ export class AppService {
     if (date.getDate() < initialMonthClosed || isWinter) return true;
     return false;
   }
+
+  private getResultGroupByFreq(
+    result: IResultProcess[],
+    frequency: POINTS_FREQUENCY,
+  ): IResultProcess[] {
+    const mapGroupByFreq = new Map();
+    result.forEach((resultElement) => {
+      const resultDate = new Datez(resultElement.date);
+      const dateGroupByFreq = this.getDateGroupByFreq(resultDate, frequency);
+
+      if (!mapGroupByFreq.has(dateGroupByFreq)) {
+        const newMapRegister: MapRegister = {
+          total: Number(resultElement.value),
+          counter: 1,
+          average: Number(resultElement.value),
+        };
+        mapGroupByFreq.set(dateGroupByFreq, newMapRegister);
+        return;
+      }
+      const MapRegister: MapRegister = mapGroupByFreq.get(dateGroupByFreq);
+      MapRegister.total = MapRegister.total + Number(resultElement.value);
+      MapRegister.counter++;
+      MapRegister.average = MapRegister.total / MapRegister.counter;
+
+      mapGroupByFreq.set(dateGroupByFreq, MapRegister);
+    });
+    const resultGroupByFreq = Array.from(mapGroupByFreq, this.fomartMapToArry);
+    return resultGroupByFreq;
+  }
+
+  private getDateGroupByFreq(
+    resultDate: Datez,
+    frequency: POINTS_FREQUENCY,
+  ): string {
+    switch (frequency) {
+      case POINTS_FREQUENCY.PHour: {
+        return resultDate.startOfHour().format(DatezFormat.standardDateTime);
+      }
+      case POINTS_FREQUENCY.PDay: {
+        return resultDate.startOfDay().format(DatezFormat.standardDateTime);
+      }
+      case POINTS_FREQUENCY.PWeek: {
+        return resultDate
+          .startOfWeek({ weekStartsOn: 0 })
+          .format(DatezFormat.standardDateTime);
+      }
+    }
+  }
+
+  private fomartMapToArry(mapGroupByFreqElement): IResultProcess {
+    return {
+      date: mapGroupByFreqElement[0],
+      value: mapGroupByFreqElement[1].average,
+    };
+  }
 }
 
 export interface ParametersCalculation {
@@ -163,10 +207,15 @@ export interface IPoint {
   referenceValue: number;
   metricId: number;
 }
-
 export interface IReportInput {
   dateFrom: string;
   dateTo: string;
-  frequency: string;
+  frequency: POINTS_FREQUENCY;
   energy: string;
+}
+
+export interface MapRegister {
+  total: number;
+  counter: number;
+  average: number;
 }

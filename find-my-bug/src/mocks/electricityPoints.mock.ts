@@ -1,6 +1,9 @@
 export const ElectricityPoints = [
   {
-    
+    date: '2022-12-16 00:00:00.000',
+    value: 48.0,
+    referenceValue: 0.0,
+    metricId: 3770,
   },
   {
     date: '2022-12-16 00:10:00.000',
